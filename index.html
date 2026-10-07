@@ -27,11 +27,19 @@
   <style>
     body { font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
     .hero-bg {
-      background-image:
-        linear-gradient(90deg, rgba(8,36,63,.98) 0%, rgba(8,36,63,.94) 32%, rgba(8,36,63,.68) 53%, rgba(8,36,63,.12) 78%),
-        url('./assets/images/cover1.png');
-      background-size: cover;
-      background-position: center;
+      background-color: #08243f;
+    }
+    .hero-slide {
+      animation: heroFade 25s infinite;
+      opacity: 0;
+    }
+    .hero-slide:nth-child(2) { animation-delay: 5s; }
+    .hero-slide:nth-child(3) { animation-delay: 10s; }
+    .hero-slide:nth-child(4) { animation-delay: 15s; }
+    .hero-slide:nth-child(5) { animation-delay: 20s; }
+    @keyframes heroFade {
+      0%, 16% { opacity: 1; }
+      20%, 100% { opacity: 0; }
     }
     .mesh-grid {
       background-image:
@@ -122,6 +130,14 @@
   <main id="home">
     <!-- Hero -->
     <section class="hero-bg relative min-h-[520px] overflow-hidden lg:min-h-[600px]">
+      <div class="absolute inset-0">
+        <img src="./assets/images/cover1.png" alt="" class="hero-slide photo-polish absolute inset-0 h-full w-full object-cover" />
+        <img src="./assets/images/item1.png" alt="" class="hero-slide photo-polish absolute inset-0 h-full w-full object-cover" />
+        <img src="./assets/images/item2.png" alt="" class="hero-slide photo-polish absolute inset-0 h-full w-full object-cover" />
+        <img src="./assets/images/item3.png" alt="" class="hero-slide photo-polish absolute inset-0 h-full w-full object-cover" />
+        <img src="./assets/images/item4.png" alt="" class="hero-slide photo-polish absolute inset-0 h-full w-full object-cover" />
+      </div>
+      <div class="absolute inset-0 bg-gradient-to-r from-navy2 via-navy2/75 to-navy2/10"></div>
       <div class="absolute inset-0 mesh-grid opacity-20"></div>
       <div class="relative mx-auto flex min-h-[520px] max-w-[1450px] items-center px-5 py-16 lg:min-h-[600px] lg:px-8">
         <div class="max-w-[650px] text-white">
