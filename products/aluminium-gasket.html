@@ -34,7 +34,7 @@
       </a>
       <div class="hidden items-center gap-8 text-sm font-semibold text-slate-700 lg:flex">
         <a href="../index.html#products" class="py-2 transition hover:text-blue-700">Products</a>
-        <a href="../index.html#quote" class="rounded-md bg-orange px-5 py-2 font-bold text-white transition hover:bg-orange/90">Request a Quote</a>
+        <a href="../index.html#quote" class="rounded-md bg-orange px-5 py-2 font-bold text-white transition hover:bg-orange/90">Request a Quote</a><button id="openBrochureModal" type="button" class="rounded-md border border-blue-600 px-5 py-2 font-bold text-blue-700 transition hover:bg-blue-50">Download Brochure</button>
       </div>
     </nav>
   </header>
@@ -100,12 +100,113 @@
     </section>
   </main>
 
+
+  <div id="brochureModal" class="fixed inset-0 z-[100] hidden items-center justify-center bg-navy2/80 px-4 py-6 backdrop-blur-sm">
+    <div class="w-full max-w-lg rounded-2xl bg-white p-6 shadow-soft sm:p-8">
+      <div class="flex items-start justify-between gap-5">
+        <div>
+          <div class="text-xs font-black uppercase tracking-[0.28em] text-blue-700">Download Brochure</div>
+          <h2 class="mt-2 text-2xl font-black tracking-tight text-navy2">Get the product catalogue.</h2>
+        </div>
+        <button id="closeBrochureModal" type="button" class="rounded-md border border-slate-200 px-3 py-1.5 text-lg font-black text-slate-500 transition hover:bg-slate-50" aria-label="Close brochure form">×</button>
+      </div>
+      <form id="brochureForm" action="https://formsubmit.co/mansurimunaf5@gmail.com" method="POST" class="mt-6 grid gap-4">
+        <input type="hidden" name="_subject" value="New brochure download request from Burhani Wire Cloth Co. website" />
+        <input type="hidden" name="_captcha" value="false" />
+        <input type="hidden" name="_template" value="table" />
+        <input type="hidden" name="source_page" value="Product detail page" />
+        <div>
+          <label class="mb-2 block text-sm font-bold text-slate-700">Name</label>
+          <input required name="name" type="text" class="w-full rounded-lg border border-slate-300 px-4 py-3 outline-none transition focus:border-blue-500 focus:ring-4 focus:ring-blue-50" placeholder="Your name" />
+        </div>
+        <div>
+          <label class="mb-2 block text-sm font-bold text-slate-700">Email</label>
+          <input required name="email" type="email" class="w-full rounded-lg border border-slate-300 px-4 py-3 outline-none transition focus:border-blue-500 focus:ring-4 focus:ring-blue-50" placeholder="name@company.com" />
+        </div>
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label class="mb-2 block text-sm font-bold text-slate-700">Phone</label>
+            <input required name="phone" type="tel" class="w-full rounded-lg border border-slate-300 px-4 py-3 outline-none transition focus:border-blue-500 focus:ring-4 focus:ring-blue-50" placeholder="+91" />
+          </div>
+          <div>
+            <label class="mb-2 block text-sm font-bold text-slate-700">City</label>
+            <input required name="city" type="text" class="w-full rounded-lg border border-slate-300 px-4 py-3 outline-none transition focus:border-blue-500 focus:ring-4 focus:ring-blue-50" placeholder="City" />
+          </div>
+        </div>
+        <button class="rounded-lg bg-orange px-6 py-4 font-black text-white shadow-lg transition hover:bg-orange/90" type="submit">Download</button>
+        <p id="brochureMessage" class="hidden text-center text-sm font-semibold text-emerald-700">Preparing your download...</p>
+      </form>
+    </div>
+  </div>
   <footer class="bg-navy2 text-slate-300">
     <div class="mx-auto flex max-w-[1450px] flex-col gap-2 px-5 py-6 text-xs text-slate-500 sm:flex-row sm:items-center sm:justify-between lg:px-8">
       <p>© <span id="year"></span> Burhani Wire Cloth Co. All rights reserved.</p>
       <p><a href="../index.html#contact" class="hover:text-white">Contact</a></p>
     </div>
   </footer>
-  <script>document.getElementById('year').textContent = new Date().getFullYear();</script>
+    <script>
+    const brochureModal = document.getElementById('brochureModal');
+    const openBrochureModal = document.getElementById('openBrochureModal');
+    const closeBrochureModal = document.getElementById('closeBrochureModal');
+    const brochureForm = document.getElementById('brochureForm');
+    const brochureMessage = document.getElementById('brochureMessage');
+    const brochureUrl = '../assets/images/Burhani_Wire_Cloth_Product_Catalogue.pdf';
+
+    openBrochureModal.addEventListener('click', () => {
+      brochureModal.classList.remove('hidden');
+      brochureModal.classList.add('flex');
+    });
+
+    closeBrochureModal.addEventListener('click', () => {
+      brochureModal.classList.add('hidden');
+      brochureModal.classList.remove('flex');
+    });
+
+    brochureModal.addEventListener('click', (event) => {
+      if (event.target === brochureModal) {
+        brochureModal.classList.add('hidden');
+        brochureModal.classList.remove('flex');
+      }
+    });
+
+    brochureForm.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      brochureMessage.textContent = 'Sending details and preparing download...';
+      brochureMessage.className = 'text-center text-sm font-semibold text-emerald-700';
+
+      try {
+        const response = await fetch(brochureForm.action, {
+          method: 'POST',
+          body: new FormData(brochureForm),
+          headers: { Accept: 'application/json' }
+        });
+
+        if (!response.ok) {
+          throw new Error('Brochure form submission failed');
+        }
+
+        const downloadLink = document.createElement('a');
+        downloadLink.href = brochureUrl;
+        downloadLink.download = 'Burhani_Wire_Cloth_Product_Catalogue.pdf';
+        document.body.appendChild(downloadLink);
+        downloadLink.click();
+        downloadLink.remove();
+
+        brochureForm.reset();
+        brochureMessage.textContent = 'Thank you. Your brochure download has started.';
+        setTimeout(() => {
+          brochureModal.classList.add('hidden');
+          brochureModal.classList.remove('flex');
+          brochureMessage.classList.add('hidden');
+        }, 1800);
+      } catch (error) {
+        brochureMessage.textContent = 'Unable to send details right now. Please try again.';
+        brochureMessage.className = 'text-center text-sm font-semibold text-red-600';
+      }
+    });
+
+    document.getElementById('year').textContent = new Date().getFullYear();
+  </script>
 </body>
 </html>
+
